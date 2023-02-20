@@ -19,20 +19,13 @@ repo.config_writer().set_value("core", "protectNTFS ", "false").release()
 
 templates_found = []
 
+versions = ['7.4.0', '7.3.0', '7.2.0', '7.1.0', '7.0.0', '6.9.0', '6.8.0', '6.7.0', '6.6.0', '6.5.0', '6.4.0', '6.3.0', '6.2.0', '6.1.0', '6.0.0', '5.9.0', '5.8.0', '5.7.0', '5.6.0', '5.5.0', '5.4.0', '5.3.0', '5.2.0', '5.1.0', '5.0.0', '4.9.0', '4.8.0', '4.7.0', '4.6.0', '4.5.0', '4.4.0', '4.3.0', '4.2.0', '4.1.0', '4.0.0', '3.9.0', '3.8.0', '3.7.0', '3.6.0', '3.5.0', '3.4.0', '3.3.0', '3.2.0', '3.1.0', '3.0.0', '2.6.0']
+
 # Iterate over the specified tags
-for tag in repo.tags:
+for tag in versions:
     # remove v from tag
-    tag_name = tag.name.replace('v', '')
-    try:
-      major_version = int(tag_name.split('.')[0])
-    except:
-      print('Failed to get major version from tag {}. Skipping...'.format(tag_name))
-      continue
-
-    # Start from version 2
-    if major_version < 2:
-      continue
-
+    tag_name = tag
+    major_version = int(tag_name.split('.')[0])
     template_location = 'plugins/woocommerce/templates/' if major_version >= 6 else 'templates/'
 
     # Checkout the tag to get the files
