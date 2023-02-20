@@ -11,7 +11,7 @@ template_version_regex = re.compile(r"\* @version\s+(.*)")
 
 # Clone the Git repository
 print('Cloning repository')
-# Repo.clone_from(repo_url, local_dir)
+Repo.clone_from(repo_url, local_dir)
 
 # Open the cloned repository
 repo = Repo(local_dir)
@@ -23,9 +23,14 @@ templates_found = []
 for tag in repo.tags:
     # remove v from tag
     tag_name = tag.name.replace('v', '')
-    major_version = int(tag_name.split('.')[0])
+    try:
+      major_version = int(tag_name.split('.')[0])
+    except:
+      print('Failed to get major version from tag {}. Skipping...'.format(tag_name))
+      continue
 
-    if major_version < 5:
+    # Start from version 2
+    if major_version < 2:
       continue
 
     template_location = 'plugins/woocommerce/templates/' if major_version >= 6 else 'templates/'
