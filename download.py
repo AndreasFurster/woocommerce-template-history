@@ -3,7 +3,7 @@ import re
 from git import Repo
 import json
 
-use_existing_repo = False
+use_existing_repo = True
 
 # Specify the URL of the Git repository and the local directory to clone it to
 repo_url = 'https://github.com/woocommerce/woocommerce.git'
@@ -25,27 +25,31 @@ templates_found = []
 
 meta = {}
 
-# Automatically get all tags matching regex pattern [0-9]+\.[0-9]+\.[0-9]+
 tags = repo.tags
-versions = [tag.name for tag in tags if re.match(r'[0-9]+\.[0-9]+\.[0-9]+', tag.name)]
+versions = [tag.name for tag in tags if re.match(r'^[0-9]+\.[0-9]+\.[0-9]+$', tag.name)]
+versions.reverse()
+
+print('Getting tags: {}'.format(versions))
 
 # For debugging, only take the first 5 tags
 # versions = versions[:5]
 
 
 # Iterate over the specified tags
-for tag in versions:
-    # remove v from tag
-    tag_name = tag
+for tag_name in versions:
     major_version = int(tag_name.split('.')[0])
+
+    if major_version < 3:
+      continue  # Skip versions before 3.0.0
+
     template_location = 'plugins/woocommerce/templates/' if major_version >= 6 else 'templates/'
 
     # Checkout the tag to get the files
     try:  
       print('Downloading files from tag {}'.format(tag_name))
-      repo.git.checkout(tag)
+      repo.git.checkout(tag_name)
     except:
-      print('Failed to checkout tag {}. Skipping...'.format(tag_name))
+      print('Failed to checkout tag {} Skipping...'.format(tag_name))
       continue
 
     template_tag_search = '* @version {}'.format(tag_name)
