@@ -3,7 +3,7 @@ import re
 from git import Repo
 import json
 
-use_existing_repo = True
+use_existing_repo = False
 
 # Specify the URL of the Git repository and the local directory to clone it to
 repo_url = 'https://github.com/woocommerce/woocommerce.git'
@@ -25,8 +25,13 @@ templates_found = []
 
 meta = {}
 
-versions = ['7.8.0', '7.7.0', '7.6.0', '7.5.0', '7.4.0', '7.3.0', '7.2.0', '7.1.0', '7.0.0', '6.9.0', '6.8.0', '6.7.0', '6.6.0', '6.5.0', '6.4.0', '6.3.0', '6.2.0', '6.1.0', '6.0.0', '5.9.0', '5.8.0', '5.7.0', '5.6.0', '5.5.0', '5.4.0', '5.3.0', '5.2.0', '5.1.0', '5.0.0', '4.9.0', '4.8.0', '4.7.0', '4.6.0', '4.5.0', '4.4.0', '4.3.0', '4.2.0', '4.1.0', '4.0.0', '3.9.0', '3.8.0', '3.7.0', '3.6.0', '3.5.0', '3.4.0', '3.3.0', '3.2.0', '3.1.0', '3.0.0', '2.6.0']
-# versions = ['7.8.0', '7.4.0', '4.4.0'] # Debugging
+# Automatically get all tags matching regex pattern [0-9]+\.[0-9]+\.[0-9]+
+tags = repo.tags
+versions = [tag.name for tag in tags if re.match(r'[0-9]+\.[0-9]+\.[0-9]+', tag.name)]
+
+# For debugging, only take the first 5 tags
+# versions = versions[:5]
+
 
 # Iterate over the specified tags
 for tag in versions:
